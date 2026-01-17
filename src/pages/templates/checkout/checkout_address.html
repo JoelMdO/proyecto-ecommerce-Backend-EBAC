@@ -1,0 +1,9 @@
+{% extends 'layouts/index.html' %} {% block content %}
+<h2>Checkout - Address</h2>
+<form method="post">
+  {% csrf_token %}
+  <label for="address">Address:</label>
+  <input type="text" name="address" id="address" required />
+  <button type="submit">Next: Payment</button>
+</form>
+{% endblock %}

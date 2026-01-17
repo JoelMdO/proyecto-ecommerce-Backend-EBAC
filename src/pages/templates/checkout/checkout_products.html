@@ -1,0 +1,12 @@
+{% extends 'layouts/index.html' %} {% block content %}
+<h2>Checkout - Products</h2>
+<ul>
+  {% for item in cart_items %}
+  <li>
+    {{ item.product.name }} - Quantity: {{ item.quantity }} - ${{
+    item.product.price }}
+  </li>
+  {% endfor %}
+</ul>
+<a href="{% url 'checkout_address' %}">Next: Address</a>
+{% endblock %}
