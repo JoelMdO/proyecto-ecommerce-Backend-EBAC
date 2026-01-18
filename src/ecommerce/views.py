@@ -65,3 +65,10 @@ class CheckoutUserAddressView(LoginRequiredMixin, TemplateView):
 # Checkout Credit Card Information
 class CheckoutCreditCardView(LoginRequiredMixin, TemplateView):
     template_name = "checkout/checkout_credit_card.html"
+
+# Chart AjaxView 
+class SalesAjaxDashboardView(TemplateView):
+    template_name = "sales/chart.html"
+
+class SalesView(LoginRequiredMixin, TemplateView):
+    template_name = "sales/sales.html"
