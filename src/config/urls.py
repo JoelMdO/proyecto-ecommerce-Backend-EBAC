@@ -24,6 +24,7 @@ urlpatterns = [
     path("", include("ecommerce.urls")),
     path("admin/", admin.site.urls),
     path("sales/", include("sales.urls")),
+    path("forms/", include("forms.urls")),
 ]
 if not settings.TESTING:
     urlpatterns = [

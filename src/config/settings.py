@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "order_manager.apps.OrderManagerConfig",
     "product.apps.ProductConfig",
     "sales.apps.SalesConfig",
+    "forms.apps.FormsConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
