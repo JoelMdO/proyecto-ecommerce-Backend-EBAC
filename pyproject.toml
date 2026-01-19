@@ -14,7 +14,9 @@ dependencies = [
   "ruff==0.14.10",
   "setuptools==80.9.0",
   "whitenoise==6.11.0",
-  "pillow==12.1.0"
+  "pillow==12.1.0",
+  "djangorestframework==3.16.1",
+  "djangorestframework-stubs==3.16.7"
 ]
 
 [tool.ruff]
