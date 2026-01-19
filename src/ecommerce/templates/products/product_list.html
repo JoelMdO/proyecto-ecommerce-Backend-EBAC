@@ -1,4 +1,5 @@
-{% extends 'layouts/index.html' %} {% block content %}
+{% extends 'pages/base.html' %} {% block title %}Product List{% endblock title
+%} {% block content %}
 <h2>Product List</h2>
 <ul>
   {% for product in products %}
@@ -8,4 +9,4 @@
   </li>
   {% endfor %}
 </ul>
-{% endblock %}
+{% endblock content%}

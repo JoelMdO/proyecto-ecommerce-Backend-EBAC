@@ -1,34 +1,25 @@
-{% load static %}
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Total de Ventas</title>
-  </head>
-  <body>
-    <div class="col">
-      <p>Pagadas</p>
-      <ol>
-        {% for order in paid_orders %}
-        <li>
-          Order ID: {{ order.id }} - Total: {{ order.total }} - Date: {{
-          order.created_at|date:"Y-m-d H:i" }}
-        </li>
-        {% empty %}
-        <li>No hay órdenes para mostrar</li>
-        {% endfor %}
-      </ol>
-    </div>
-    <div class="col">
-      <canvas
-        class="render-chart"
-        id="salesChart"
-        width="400"
-        height="200"
-        data-type="week"
-      ></canvas>
-    </div>
-    {% include "pages/js.html" %}
-  </body>
-</html>
+{% extends 'pages/base.html' %} {% block title %}Sales Chart{% endblock title %}
+{% block content %}
+<div class="col">
+  <p>Pagadas</p>
+  <ol>
+    {% for order in paid_orders %}
+    <li>
+      Order ID: {{ order.id }} - Total: {{ order.total }} - Date: {{
+      order.created_at|date:"Y-m-d H:i" }}
+    </li>
+    {% empty %}
+    <li>No hay órdenes para mostrar</li>
+    {% endfor %}
+  </ol>
+</div>
+<div class="col">
+  <canvas
+    class="render-chart"
+    id="salesChart"
+    width="400"
+    height="200"
+    data-type="week"
+  ></canvas>
+</div>
+{% include "pages/js.html" %} {% endblock content%}

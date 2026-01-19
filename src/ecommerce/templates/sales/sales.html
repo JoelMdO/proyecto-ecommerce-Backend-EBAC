@@ -1,0 +1,14 @@
+{% extends 'pages/base.html' %} {% block title %}Sales - {{ product.name }}{%
+endblock title %} {% block content %}
+<h2>Sales for {{ product.name | upper }}</h2>
+<ul>
+  {% for sale in sales %}
+  <li class="{% cycle &quot;&quot; &quot;bold&quot; %}">
+    Date: {{ sale.date | date:"Y-m-d H:i" }} - Quantity: {{ sale.quantity }}
+  </li>
+  <li {% if sale.total_price>
+    = 800 %}class="red"{% endif %}>Total Price: {{ sale.total_price }}
+  </li>
+  {% endfor %}
+</ul>
+{% endblock content%}

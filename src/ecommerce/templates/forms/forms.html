@@ -1,3 +1,5 @@
+{% extends 'pages/base.html' %} {% block title %}Form{% endblock title %} {%
+block content %}
 <h1>Formulario de Registro de Usuario</h1>
 <form method="POST" action="">
   {% csrf_token %}{{ form.as_p }}
@@ -6,3 +8,4 @@
   <a href="{{delete_url}}">Eliminar</a>
   {% endif %}
 </form>
+{% endblock content%}

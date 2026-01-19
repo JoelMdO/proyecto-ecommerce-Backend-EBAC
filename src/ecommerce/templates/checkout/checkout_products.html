@@ -1,4 +1,5 @@
-{% extends 'layouts/index.html' %} {% block content %}
+{% extends 'pages/base.html' %} {% block title %}Checkout Products{% endblock
+title %} {% block content %}
 <h2>Checkout - Products</h2>
 <ul>
   {% for item in cart_items %}
@@ -9,4 +10,4 @@
   {% endfor %}
 </ul>
 <a href="{% url 'checkout_address' %}">Next: Address</a>
-{% endblock %}
+{% endblock content%}
