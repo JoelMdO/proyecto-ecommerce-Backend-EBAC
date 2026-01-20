@@ -6,6 +6,7 @@ from rest_framework import status
 
 from .models import ProductModel
 from .serializers import ProductSerializer
+from rest_framework.viewsets import ViewSet
 
 
 # List products (price > 1000) and create new products
@@ -41,7 +42,6 @@ class ProductsAPIView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# Partial update for a single product (e.g., update price)
 class ProductDetailAPIView(APIView):
     def put(self, request: Request, pk: int):
         try:
@@ -54,5 +54,75 @@ class ProductDetailAPIView(APIView):
                 serializer.save()
                 return Response(serializer.data)# type: ignore
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)# type: ignore
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+## VIEWSET IMPLEMENTATION
+class ProductsViewSet(ViewSet): 
+    serializer_class = ProductSerializer
+
+    def create(self, request:Request):
+        
+        try:
+            serializer = self.serializer_class(data=request.data)    
+            if serializer.is_valid():
+                name = serializer.validated_data.get("name")
+                serializer.save()
+                return Response({"message": f"Product: {name} saved"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request: Request, pk: int | None = None):
+
+        try:
+            serializer = self.serializer_class(data=request.data)    
+            product = serializer.validated_data.get({"id": pk})
+            return Response({"message": product}, status=status.HTTP_200_OK)
+        except ProductModel.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def update(self, request: Request, pk: int | None = None):
+        try:
+            product = ProductModel.objects.get(pk=pk)
+            serializer = self.serializer_class(product, data=request.data, context={"request": request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "Product Updated"}, status=status.HTTP_200_OK)
+        except ProductModel.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)    
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def partial_update(self, request: Request, pk: int | None = None):
+        try:
+            product = ProductModel.objects.get(pk=pk)
+            serializer = self.serializer_class(product, data=request.data, context={"request": request}, partial=True) ##added partial=True for partial updates
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "Product Updated"}, status=status.HTTP_200_OK)
+        except ProductModel.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)    
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def destroy(self, request: Request, pk: int | None = None):
+        try:
+            product = ProductModel.objects.get(pk=pk)
+            product.delete()
+            return Response({"message": "Product deleted"}, status=status.HTTP_200_OK)
+        except ProductModel.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    def list(self, request: Request):
+        try:
+            viewset_info = [
+            request.data,
+            ]
+            return Response({"message": viewset_info}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

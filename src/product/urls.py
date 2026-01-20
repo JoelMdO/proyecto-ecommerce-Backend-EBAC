@@ -1,7 +1,13 @@
-from django.urls import path
+from typing import List, Union
+from django.urls import include, path, URLPattern, URLResolver
+from product.views import ProductsAPIView, ProductsViewSet
+from rest_framework.routers import DefaultRouter
 
-from product.views import ProductsAPIView
+router = DefaultRouter()
+router.register("product-viewset", ProductsViewSet, basename="product-viewset")
 
-urlpatterns = [
-path("", ProductsAPIView.as_view())
+
+urlpatterns: List[Union[URLPattern, URLResolver]] = [
+path("", ProductsAPIView.as_view()),
+path("viewsets/", include(router.urls)),
 ]
