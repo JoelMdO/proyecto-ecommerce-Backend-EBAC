@@ -25,7 +25,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("sales/", include("sales.urls")),
     path("forms/", include("forms.urls")),
-    path("api/v1/", include("product.urls"))
+    path("api/v1/", include("product.urls")),
+    path("account/", include("user.urls")),
 ]
 if not settings.TESTING:
     urlpatterns = [

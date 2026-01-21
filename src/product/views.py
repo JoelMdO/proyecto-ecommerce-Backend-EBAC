@@ -7,7 +7,7 @@ from .models import ProductModel
 from .serializers import ProductSerializer
 from rest_framework.viewsets import ViewSet
 from .pagination import ProductPagination as DefaultProductPagination
-
+from rest_framework.permissions import IsAuthenticated
 
 # List products (price > 1000) and create new products
 class ProductsAPIView(APIView):
@@ -131,3 +131,5 @@ class ProductsPaginationListAPIView(generics.ListAPIView[Any]):
     queryset =  ProductModel.objects.all()
     serializer_class = ProductSerializer
     pagination_class = DefaultProductPagination
+    permission_classes = [IsAuthenticated]
+    

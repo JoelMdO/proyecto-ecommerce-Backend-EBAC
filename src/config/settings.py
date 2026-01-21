@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "product.apps.ProductConfig",
     "sales.apps.SalesConfig",
     "forms.apps.FormsConfig",
+    "rest_framework.authtoken",
+    "user.apps.UserConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -57,11 +59,18 @@ REST_FRAMEWORK = {
                 'rest_framework.renderers.JSONRenderer',
                 'rest_framework.renderers.BrowsableAPIRenderer',
         ],
+        'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        ],
         # 'DEFAULT_PERMISSION_CLASSES': [
         #     'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
         # ]
 }
 
+
+SIMPLE_JWT = {
+    "ROTATE_REFRESH_TOKENS": True
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
