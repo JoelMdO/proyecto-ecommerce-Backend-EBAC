@@ -2,11 +2,11 @@ from typing import Any
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework import status
-
+from rest_framework import status, generics
 from .models import ProductModel
 from .serializers import ProductSerializer
 from rest_framework.viewsets import ViewSet
+from .pagination import ProductPagination as DefaultProductPagination
 
 
 # List products (price > 1000) and create new products
@@ -126,3 +126,8 @@ class ProductsViewSet(ViewSet):
             return Response({"message": viewset_info}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ProductsPaginationListAPIView(generics.ListAPIView[Any]):
+    queryset =  ProductModel.objects.all()
+    serializer_class = ProductSerializer
+    pagination_class = DefaultProductPagination
