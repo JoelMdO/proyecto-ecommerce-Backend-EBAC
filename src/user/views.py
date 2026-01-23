@@ -9,10 +9,15 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from user.serializers import RegistrationSerializer
 
-@api_view(['POST', ]) 
+from django.views.generic import TemplateView
+from django.contrib.auth.views import LoginView as DjangoLoginView, LogoutView, PasswordResetView
+from django.urls import reverse_lazy
+
+
+@api_view(['POST', ])
 def registration_view(request: Request):
     if request.method == "POST":
-        serializer = RegistrationSerializer(data = request.data)
+        serializer = RegistrationSerializer(data=request.data)
 
         data = {}
 
@@ -30,10 +35,10 @@ def registration_view(request: Request):
             }
 
         else:
-            data = serializer.errors #type: ignore
+            data = serializer.errors  # type: ignore
 
-    return Response(data) # type: ignore
-    
+    return Response(data)  # type: ignore
+
 
 class LoginView(APIView):
     def post(self, request: Request):
@@ -44,3 +49,25 @@ class LoginView(APIView):
             token_created = Token.objects.get_or_create(user=user)
             return Response({'token': token_created})
         return Response({'error': 'Credenciales inválidas'}, status=400)
+
+
+# Template-based auth views for site (moved from ecommerce.views)
+class UserRegistrationView(TemplateView):
+    template_name = "registration/register.html"
+    success_url = reverse_lazy("login")
+
+
+class UserLoginView(DjangoLoginView):
+    template_name = "registration/login.html"
+
+
+class UserLogoutView(LogoutView):
+    # Do not cast `reverse_lazy` to `str()` at import time — that forces URL resolution
+    # and can cause circular import errors. Assign the lazy object directly.
+    next_page = reverse_lazy("login") # type: ignore
+
+
+class UserPasswordResetView(PasswordResetView):
+    template_name = "registration/password_reset.html"
+    email_template_name = "registration/password_reset_email.html"
+    success_url = reverse_lazy("login")

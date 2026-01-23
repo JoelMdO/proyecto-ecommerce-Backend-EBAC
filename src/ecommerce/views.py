@@ -6,8 +6,7 @@ from django.shortcuts import render
 from typing import Any, Dict
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, TemplateView
-from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView
-from django.urls import reverse_lazy
+
 
 def home(request: HttpRequest):
     context: Dict[str, Any] = {
@@ -18,34 +17,16 @@ def home(request: HttpRequest):
 
     return render(request, "pages/home.html", context)
 
-# User Registration View
-class UserRegistrationView(TemplateView):
-    template_name = "registration/register.html"
-    success_url = reverse_lazy("login")
-    # form_class = UserRegistrationForm  # Define this form in your forms.py
-
-# User Login View
-class UserLoginView(LoginView):
-    template_name = "registration/login.html"
-
-# User Logout View
-class UserLogoutView(LogoutView):
-    next_page = reverse_lazy("login")
-
-# Password Reset View
-class UserPasswordResetView(PasswordResetView):
-    template_name = "registration/password_reset.html"
-    email_template_name = "registration/password_reset_email.html"
-    success_url = reverse_lazy("login")
+# Authentication views were moved to the `user` app to improve separation of concerns
 
 # Products List View
-class ProductsListView(ListView):
+class ProductsListView(ListView): # type: ignore
     template_name = "products/product_list.html"
     # model = Product  # Define your Product model
     context_object_name = "products"
 
 # Product Detail View
-class ProductDetailView(DetailView):
+class ProductDetailView(DetailView): # type: ignore
     template_name = "products/product_detail.html"
     # model = Product
     context_object_name = "product"

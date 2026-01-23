@@ -34,3 +34,8 @@ class RegistrationSerializer(ModelSerializer[User]):
         account.save()
 
         return account
+
+class UserSerializer(ModelSerializer[User]):
+    class Meta(): # type: ignore 
+        model = User
+        fields = ["id", "username", "email"]

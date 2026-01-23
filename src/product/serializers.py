@@ -6,4 +6,4 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer): # type: ignore
 
     class Meta: # type: ignore
         model = ProductModel
-        fields = ["name", "price", "description", "stock", "image"]
+        fields = ["id", "name", "price", "description", "stock", "image"]
