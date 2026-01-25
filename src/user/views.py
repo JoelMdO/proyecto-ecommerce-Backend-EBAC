@@ -6,8 +6,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
 from user.serializers import RegistrationSerializer
+from rest_framework.permissions import IsAuthenticated
 
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView as DjangoLoginView, LogoutView, PasswordResetView
@@ -26,7 +26,6 @@ def registration_view(request: Request):
 
             data["response"] = "Registro Exitoso"
             data["username"] = account.username
-            data["email"] = account.email
 
             jwt_tokens = RefreshToken.for_user(account)
             data["token"] = {
@@ -46,12 +45,33 @@ class LoginView(APIView):
         password = request.data.get('password')
         user = authenticate(username=username, password=password)
         if user:
-            token_created = Token.objects.get_or_create(user=user)
-            return Response({'token': token_created})
+            jwt_tokens = RefreshToken.for_user(user)
+            data = { # type: ignore
+                'username': user.username, # type: ignore
+                'token': {
+                    'refresh': str(jwt_tokens),
+                    'access': str(jwt_tokens.access_token),
+                }
+            }
+            return Response(data)
         return Response({'error': 'Credenciales inválidas'}, status=400)
 
 
-# Template-based auth views for site (moved from ecommerce.views)
+class LogoutUserView(APIView):
+    """Blacklist a given refresh token (client must POST the refresh token)."""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request: Request):
+        refresh_token = request.data.get("refresh")
+        if not refresh_token:
+            return Response({"detail": "Refresh token required"}, status=400)
+        try:
+            RefreshToken(refresh_token).blacklist()
+            return Response(status=204)
+        except Exception:
+            return Response({"detail": "Invalid or already blacklisted token"}, status=400)
+
+
 class UserRegistrationView(TemplateView):
     template_name = "registration/register.html"
     success_url = reverse_lazy("login")
@@ -62,8 +82,6 @@ class UserLoginView(DjangoLoginView):
 
 
 class UserLogoutView(LogoutView):
-    # Do not cast `reverse_lazy` to `str()` at import time — that forces URL resolution
-    # and can cause circular import errors. Assign the lazy object directly.
     next_page = reverse_lazy("login") # type: ignore
 
 

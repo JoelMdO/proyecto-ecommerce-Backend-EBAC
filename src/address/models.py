@@ -2,8 +2,7 @@ from django.db import models
 
 # Create your models here.
 class AddressModel(models.Model):
- street = models.CharField(max_length=100)
- city = models.CharField(max_length=50)
- state = models.CharField(max_length=50)
- country = models.CharField(max_length=50)
- postal_code = models.CharField(max_length=10)
+ user_name = models.CharField(max_length=255) # type: ignore
+ address = models.CharField(max_length=100)# type: ignore
+ card = models.CharField(max_length=16)# type: ignore
+ phone = models.CharField(max_length=15) # type: ignore

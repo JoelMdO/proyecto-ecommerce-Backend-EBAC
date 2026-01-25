@@ -1,7 +1,6 @@
 from typing import Any
 import re
 from django import forms
-## Model Form
 from .models import UserRegistrationModel
 
 labels = {
@@ -11,7 +10,7 @@ labels = {
 }
 
 
-class UserRegistrationModelForm(forms.ModelForm):
+class UserRegistrationModelForm(forms.ModelForm): #type: ignore
     class Meta:
         model = UserRegistrationModel
         fields = [

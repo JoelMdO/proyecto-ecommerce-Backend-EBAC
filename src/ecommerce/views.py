@@ -22,13 +22,11 @@ def home(request: HttpRequest):
 # Products List View
 class ProductsListView(ListView): # type: ignore
     template_name = "products/product_list.html"
-    # model = Product  # Define your Product model
     context_object_name = "products"
 
 # Product Detail View
 class ProductDetailView(DetailView): # type: ignore
     template_name = "products/product_detail.html"
-    # model = Product
     context_object_name = "product"
 
 # Shopping Cart - Added Products

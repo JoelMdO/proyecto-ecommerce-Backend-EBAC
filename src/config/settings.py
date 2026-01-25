@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 
 from distutils.util import strtobool
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,6 +35,7 @@ ALLOWED_HOSTS = list(map(str.strip, allowed_hosts.split(",")))
 
 # Application definitions
 INSTALLED_APPS = [
+    "corsheaders",
     "ecommerce.apps.EcommerceConfig",
     "address.apps.AddressConfig",
     "cart.apps.CartConfig",
@@ -51,6 +53,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 REST_FRAMEWORK = {
@@ -72,8 +75,16 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True
 }
 
+# Token lifetime configuration: require frontend to refresh access tokens after 1 hour
+SIMPLE_JWT.update({
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    # Keep a longer refresh window (adjust as appropriate for your security needs)
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+})
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -185,6 +196,9 @@ STATICFILES_DIRS = ["/public", os.path.join(BASE_DIR, "..", "public")]
 STATIC_ROOT = "/public_collected"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# Media files (user uploaded)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "..", "media")
 # Django Debug Toolbar
 # https://django-debug-toolbar.readthedocs.io/
 if DEBUG:
@@ -196,3 +210,11 @@ if DEBUG:
         "127.0.0.1",
         "10.0.2.2",
     ]
+
+# CORS
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+# If you need cookies/authentication across origins, enable this
+# CORS_ALLOW_CREDENTIALS = True

@@ -11,7 +11,7 @@ class SalesView(LoginRequiredMixin, TemplateView):
 
     def dispatch(self, *args: Any, **kargs: Any):
         user = self.request.user
-        if not user.is_staff:
+        if not user.is_staff: # type: ignore #type :ignore
             return HttpResponse("No permitido", status=401)
         return super(SalesView, self).dispatch(*args, **kargs)
     
@@ -25,7 +25,7 @@ class SalesAjaxDashboardView(View):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> Any:
         data = {}
         qs = OrderManagerModel.objects.all()
-        total_sales = sum(order.total for order in qs)
+        total_sales = sum(order.total for order in qs) # type: ignore
         print(total_sales)
         data["data"] = [float(total_sales)]  # Chart.js expects array
         data["labels"] = ["Total Sales"]

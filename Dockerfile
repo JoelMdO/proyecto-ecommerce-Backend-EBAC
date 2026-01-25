@@ -80,8 +80,8 @@ RUN apt-get update \
   && apt-get clean \
   && groupadd -g "${APP_GID}" python \
   && useradd --create-home --no-log-init -u "${APP_UID}" -g "${APP_GID}" python \
-  && mkdir -p /public_collected public \
-  && chown python:python -R /public_collected /app
+  && mkdir -p /public_collected public /app/media \
+  && chown python:python -R /public_collected /app /app/media
 
 USER python
 

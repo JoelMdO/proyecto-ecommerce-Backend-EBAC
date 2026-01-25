@@ -16,6 +16,7 @@ Including another URLconf
 """
 
 from django.conf import settings
+from django.conf.urls.static import static #type: ignore
 from django.contrib import admin
 from django.urls import include, path
 
@@ -27,9 +28,15 @@ urlpatterns = [
     path("forms/", include("forms.urls")),
     path("api/v1/", include("product.urls")),
     path("account/", include("user.urls")),
+    path("orders/", include("order_manager.urls")),
+    path("cart/", include("cart.urls")),
+    path("address/", include("address.urls")),
 ]
 if not settings.TESTING:
     urlpatterns = [
         *urlpatterns,
         path("__debug__/", include("debug_toolbar.urls")),
     ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

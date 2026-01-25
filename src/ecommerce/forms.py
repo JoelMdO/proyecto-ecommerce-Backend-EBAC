@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 # from .models import Product  # Uncomment and define your Product model
 
-class UserRegistrationForm(forms.ModelForm):
+class UserRegistrationForm(forms.ModelForm): #type: ignore
     password = forms.CharField(widget=forms.PasswordInput)
     password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirm Password")
 
@@ -12,8 +12,8 @@ class UserRegistrationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        password_confirm = cleaned_data.get("password_confirm")
+        password = cleaned_data.get("password") #type: ignore
+        password_confirm = cleaned_data.get("password_confirm") #type: ignore
         if password and password_confirm and password != password_confirm:
             self.add_error('password_confirm', "Passwords do not match.")
         return cleaned_data

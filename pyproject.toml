@@ -17,7 +17,8 @@ dependencies = [
   "pillow==12.1.0",
   "djangorestframework==3.16.1",
   "djangorestframework-stubs==3.16.7",
-  "djangorestframework-simplejwt>=5.0,<6"
+  "djangorestframework-simplejwt>=5.0,<6",
+  "django-cors-headers>=3.13.0"
 ]
 
 [tool.ruff]

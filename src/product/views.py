@@ -8,12 +8,14 @@ from .serializers import ProductSerializer
 from rest_framework.viewsets import ViewSet
 from .pagination import ProductPagination as DefaultProductPagination
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 
 # List products (price > 1000) and create new products
 class ProductsAPIView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
     def get(self, request: Request):
         try:
-            products = ProductModel.objects.filter(price__gt=1000)
+            products = ProductModel.objects.all()
             serializer = ProductSerializer(products, many=True, context={"request": request})  # type: ignore
             return Response(serializer.data)  # type: ignore
         except Exception as e:
@@ -43,6 +45,7 @@ class ProductsAPIView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ProductDetailAPIView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
     def put(self, request: Request, pk: int):
         try:
             product = ProductModel.objects.get(pk=pk)
@@ -61,11 +64,12 @@ class ProductDetailAPIView(APIView):
 ## VIEWSET IMPLEMENTATION
 class ProductsViewSet(ViewSet): 
     serializer_class = ProductSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
     def create(self, request:Request):
         
         try:
-            serializer = self.serializer_class(data=request.data)    
+            serializer = self.serializer_class(data=request.data, context={"request": request})    
             if serializer.is_valid():
                 name = serializer.validated_data.get("name")
                 serializer.save()
@@ -74,11 +78,10 @@ class ProductsViewSet(ViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request: Request, pk: int | None = None):
-
         try:
-            serializer = self.serializer_class(data=request.data)    
-            product = serializer.validated_data.get({"id": pk})
-            return Response({"message": product}, status=status.HTTP_200_OK)
+            product = ProductModel.objects.get(pk=pk)
+            serializer = self.serializer_class(product, context={"request": request})
+            return Response(serializer.data, status=status.HTTP_200_OK) # type: ignore
         except ProductModel.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
